@@ -13,10 +13,10 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 
-app.use('/api/v1/books', booksRoutes);
-app.use('/api/v1/members', membersRoutes);
-app.use('/api/v1/borrows', borrowsRoutes);
+app.use('/api/books', booksRoutes);
+app.use('/api/members', membersRoutes);
+app.use('/api/borrows', borrowsRoutes);
 
-app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default app;

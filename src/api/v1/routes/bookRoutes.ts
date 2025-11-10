@@ -1,7 +1,9 @@
 import { Router } from 'express';
-import { getBooks, createBook } from '../controllers/books.controller';
 
 const router = Router();
-router.get('/', getBooks);
-router.post('/', createBook);
+
+router.get('/', (req, res) => {
+  res.status(200).json([{ id: '1', title: 'Example Book', author: 'Author' }]);
+});
+
 export default router;
