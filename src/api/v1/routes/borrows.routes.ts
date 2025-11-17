@@ -1,11 +1,18 @@
 import { Router } from 'express';
+import {
+  getBorrows,
+  getBorrowById,
+  createBorrow,
+  updateBorrow,
+  deleteBorrow
+} from '../controllers/borrows.controller';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-  res.status(200).json([
-    { id: '1', bookId: '1', memberId: '1', dueDate: '2025-12-31', returned: false },
-  ]);
-});
+router.get('/', getBorrows);
+router.get('/:id', getBorrowById);
+router.post('/', createBorrow);
+router.put('/:id', updateBorrow);
+router.delete('/:id', deleteBorrow);
 
 export default router;

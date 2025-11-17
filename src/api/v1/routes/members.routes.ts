@@ -1,9 +1,13 @@
 import { Router } from 'express';
+import * as memberController from '../controllers/members.controller'; 
 
 const router = Router();
 
-router.get('/', (req, res) => {
-  res.status(200).json([{ id: '1', name: 'John Doe', email: 'john@example.com' }]);
-});
+
+router.post('/members', memberController.createMember);
+router.get('/members', memberController.getMembers);
+router.get('/members/:id', memberController.getMemberById);
+router.put('/members/:id', memberController.updateMember);
+router.delete('/members/:id', memberController.deleteMember);
 
 export default router;
