@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import * as memberController from '../controllers/members.controller'; 
+import authenticate from '../../v1/middleware/authenticate';
+import isAuthorized from '../../v1/middleware/authorize';
 
 const router = Router();
 
@@ -19,7 +21,12 @@ const router = Router();
  *       201:
  *         description: Member created successfully
  */
-router.post('/', memberController.createMember);
+router.post(
+  '/',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  memberController.createMember
+);
 
 /**
  * @openapi
@@ -37,7 +44,12 @@ router.post('/', memberController.createMember);
  *               items:
  *                 $ref: "#/components/schemas/Member"
  */
-router.get('/', memberController.getMembers);
+router.get(
+  '/',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  memberController.getMembers
+);
 
 /**
  * @openapi
@@ -59,7 +71,12 @@ router.get('/', memberController.getMembers);
  *             schema:
  *               $ref: "#/components/schemas/Member"
  */
-router.get('/:id', memberController.getMemberById);
+router.get(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  memberController.getMemberById
+);
 
 /**
  * @openapi
@@ -82,7 +99,12 @@ router.get('/:id', memberController.getMemberById);
  *       200:
  *         description: Member updated successfully
  */
-router.put('/:id', memberController.updateMember);
+router.put(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  memberController.updateMember
+);
 
 /**
  * @openapi
@@ -100,6 +122,11 @@ router.put('/:id', memberController.updateMember);
  *       200:
  *         description: Member deleted successfully
  */
-router.delete('/:id', memberController.deleteMember);
+router.delete(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  memberController.deleteMember
+);
 
 export default router;

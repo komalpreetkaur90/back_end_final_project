@@ -38,6 +38,9 @@
     "dev": "nodemon src/server.ts",
     "build": "tsc",
     "test": "jest --watchAll --detectOpenHandles",
-    "generate-docs": "ts-node scripts/generate-openapi.ts && npx @redocly/cli build-docs openapi.json --output docs/index.html"
+    "generate-docs": "ts-node scripts/generate-openapi.ts && npx @redocly/cli build-docs openapi.json --output docs/index.html",
+    "test": "jest",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage"
   }
 }

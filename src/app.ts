@@ -3,6 +3,13 @@ import express, { Request, Response, Express } from "express";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import { generateSwaggerSpec } from "../config/swaggerOptions";
+import {
+    accessLogger,
+    errorLogger,
+    consoleLogger,
+} from "./api/v1/middleware/logger";
+import errorHandler from "./api/v1/middleware/errorHandler";
+import userRoutes from "./api/v1/routes/userRoutes";
 
 // Load environment variables
 dotenv.config();
@@ -24,6 +31,16 @@ const app: Express = express();
 // Setup Swagger AFTER creating app
 setupSwagger(app);
 
+// Logging middleware (should be applied early in the middleware stack)
+if (process.env.NODE_ENV === "production") {
+    // In production, log to files
+    app.use(accessLogger);
+    app.use(errorLogger);
+} else {
+    // In development, log to console for immediate feedback
+    app.use(consoleLogger);
+}
+
 // Parsing JSON requests
 app.use(express.json());
 
@@ -39,9 +56,13 @@ app.get("/health", (_req: Request, res: Response) => {
 });
 
 // API Routes
+app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/books", booksRoutes);
 app.use("/api/v1/members", membersRoutes);
 app.use("/api/v1/borrows", borrowsRoutes);
+
+// Global error handling middleware (MUST be applied last)
+app.use(errorHandler);
 
 // Exporting app
 export default app;

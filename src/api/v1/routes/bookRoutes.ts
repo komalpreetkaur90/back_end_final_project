@@ -2,9 +2,10 @@ import { Router } from 'express';
 import * as bookController from '../controllers/books.controller';
 import {validate} from '../middleware/validate'
 import  *  as bookSchema from '../validation/bookValidation'
+import authenticate from '../../v1/middleware/authenticate';
+import isAuthorized from '../../v1/middleware/authorize';
 
 const router = Router();
-
 
 /**
  * @openapi
@@ -22,7 +23,12 @@ const router = Router();
  *               items:
  *                 $ref: "#/components/schemas/Book"
  */
-router.get('/', bookController.getBooks);
+router.get(
+  '/',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  bookController.getBooks
+);
 
 /**
  * @openapi
@@ -44,7 +50,12 @@ router.get('/', bookController.getBooks);
  *             schema:
  *               $ref: "#/components/schemas/Book"
  */
-router.get('/:id', bookController.getBookById);
+router.get(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  bookController.getBookById
+);
 
 /**
  * @openapi
@@ -62,7 +73,13 @@ router.get('/:id', bookController.getBookById);
  *       "201":
  *         description: Book created successfully
  */
-router.post('/', validate(bookSchema.bookSchema), bookController.createBook);
+router.post(
+  '/',
+  authenticate,                                     
+  isAuthorized({ hasRole: ['admin', 'manager'] }),     
+  validate(bookSchema.bookSchema),
+  bookController.createBook
+);
 
 /**
  * @openapi
@@ -85,7 +102,13 @@ router.post('/', validate(bookSchema.bookSchema), bookController.createBook);
  *       "200":
  *         description: Book updated successfully
  */
-router.put('/:id', validate(bookSchema.updateBookSchema), bookController.updateBook);
+router.put(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  validate(bookSchema.updateBookSchema),
+  bookController.updateBook
+);
 
 /**
  * @openapi
@@ -103,6 +126,11 @@ router.put('/:id', validate(bookSchema.updateBookSchema), bookController.updateB
  *       "200":
  *         description: Book deleted successfully
  */
-router.delete('/:id', bookController.deleteBook);
+router.delete(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  bookController.deleteBook
+);
 
 export default router;

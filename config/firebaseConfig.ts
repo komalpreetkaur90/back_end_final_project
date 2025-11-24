@@ -1,12 +1,15 @@
 // Import Statements
-import { initializeApp, cert } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+import { initializeApp, cert, ServiceAccount } from "firebase-admin/app";
+import { getFirestore, Firestore } from "firebase-admin/firestore";
 import serviceAccount from "../key.json";
+import { getAuth, Auth } from "firebase-admin/auth";
 
-// Initialize Firebase App
-const app = initializeApp({
-  credential: cert(serviceAccount as any),
+initializeApp({
+    credential: cert(serviceAccount as ServiceAccount),
 });
 
-// Export Firestore Database
-export const db = getFirestore(app);
+const auth: Auth = getAuth();
+
+const db: Firestore = getFirestore();
+
+export { auth, db };

@@ -31,3 +31,5 @@ export const updateMemberService = async (id: string, data: Partial<Member>) => 
 export const deleteMemberService = async (id: string) => {
   return await deleteDocument(COLLECTION, id);
 };
+
+

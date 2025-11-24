@@ -6,6 +6,8 @@ import {
   updateBorrow,
   deleteBorrow
 } from '../controllers/borrows.controller';
+import authenticate from '../../v1/middleware/authenticate';
+import isAuthorized from '../../v1/middleware/authorize';
 
 const router = Router();
 
@@ -25,7 +27,12 @@ const router = Router();
  *               items:
  *                 $ref: "#/components/schemas/Borrow"
  */
-router.get('/', getBorrows);
+router.get(
+  '/',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  getBorrows
+);
 
 /**
  * @openapi
@@ -47,7 +54,12 @@ router.get('/', getBorrows);
  *             schema:
  *               $ref: "#/components/schemas/Borrow"
  */
-router.get('/:id', getBorrowById);
+router.get(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  getBorrowById
+);
 
 /**
  * @openapi
@@ -65,7 +77,11 @@ router.get('/:id', getBorrowById);
  *       201:
  *         description: Borrow record created
  */
-router.post('/', createBorrow);
+router.post(
+  '/',
+  authenticate,                                  
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  createBorrow);
 
 /**
  * @openapi
@@ -88,7 +104,11 @@ router.post('/', createBorrow);
  *       200:
  *         description: Borrow record updated
  */
-router.put('/:id', updateBorrow);
+router.put(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  updateBorrow);
 
 /**
  * @openapi
@@ -106,6 +126,10 @@ router.put('/:id', updateBorrow);
  *       200:
  *         description: Borrow deleted
  */
-router.delete('/:id', deleteBorrow);
+router.delete(
+  '/:id', 
+  authenticate,
+  isAuthorized({ hasRole: ['admin', 'manager'] }),
+  deleteBorrow);
 
 export default router;
