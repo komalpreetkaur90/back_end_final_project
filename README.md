@@ -35,3 +35,31 @@ This project directly applies tools and concepts from the course, including:
 4. GitHub Project Setup:
 
 A GitHub repository called Book Library API is going to be created by me. The main branch will represent the final version and the development branch will be used for work in progress. Additionally, I will set up a GitHub Project Board for monitoring progress which will have three columns namely “To Do,” “In Progress,” and “Done.” Every task (for example, setting up routes, authentication or validation) will be created as an issue and connected to the commits. I will utilize this configuration to maintain order through every project milestone.
+Branches:
+main → final version
+development → ongoing work
+
+Project Milestones:
+
+Milestone 1: Setup & Initial Development
+
+Set up environment and project structure
+Create database schema
+Implement basic CRUD operations for books, members, borrows
+Add Swagger documentation
+Research a new back-end feature
+Write basic unit tests
+
+Milestone 2: Sprint Demo & Feature Integration
+
+Improve CRUD operations
+Integrate new feature 
+Make a working MVP for demo
+Test key functionalities
+
+Milestone 3: Final Touches & Completion
+
+Add advanced features (filtering, sorting, validation)
+Ensure secure authentication and role-based access
+Update Swagger docs
+Complete testing and polish the project
