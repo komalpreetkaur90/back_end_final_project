@@ -1,0 +1,555 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Library Management API Documentation",
+    "version": "1.0.0",
+    "description": "API documentation for the Library Management System."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "Local server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Book": {
+        "type": "object",
+        "required": [
+          "title",
+          "author",
+          "availableCopies"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "The Great Gatsby"
+          },
+          "author": {
+            "type": "string",
+            "example": "F. Scott Fitzgerald"
+          },
+          "genre": {
+            "type": "string",
+            "example": "Classic Literature"
+          },
+          "publishedYear": {
+            "type": "integer",
+            "example": 1925
+          },
+          "availableCopies": {
+            "type": "integer",
+            "example": 5
+          }
+        }
+      },
+      "BookUpdate": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Updated Title"
+          },
+          "author": {
+            "type": "string",
+            "example": "Updated Author"
+          },
+          "genre": {
+            "type": "string",
+            "example": "Science Fiction"
+          },
+          "publishedYear": {
+            "type": "integer",
+            "example": 2000
+          },
+          "availableCopies": {
+            "type": "integer",
+            "example": 10
+          }
+        }
+      },
+      "Member": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "phone"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "jane@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+1234567890"
+          }
+        }
+      },
+      "MemberUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Updated Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "updated@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+1234567890"
+          }
+        }
+      },
+      "Borrow": {
+        "type": "object",
+        "required": [
+          "memberId",
+          "bookId",
+          "borrowDate"
+        ],
+        "properties": {
+          "memberId": {
+            "type": "string",
+            "example": "member_123abc"
+          },
+          "bookId": {
+            "type": "string",
+            "example": "book_456def"
+          },
+          "borrowDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-11-23"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-12-01"
+          }
+        }
+      },
+      "BorrowUpdate": {
+        "type": "object",
+        "properties": {
+          "memberId": {
+            "type": "string",
+            "example": "member_123abc"
+          },
+          "bookId": {
+            "type": "string",
+            "example": "book_456def"
+          },
+          "borrowDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-11-23"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-12-01"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/v1/books": {
+      "get": {
+        "summary": "Get all books",
+        "tags": [
+          "Books"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all books",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new book",
+        "tags": [
+          "Books"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Book"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Book created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/books/{id}": {
+      "get": {
+        "summary": "Get a book by ID",
+        "tags": [
+          "Books"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a book",
+        "tags": [
+          "Books"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a book",
+        "tags": [
+          "Books"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/borrows": {
+      "get": {
+        "summary": "Get all borrow records",
+        "tags": [
+          "Borrows"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all borrow records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Borrow"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new borrow record",
+        "tags": [
+          "Borrows"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Borrow"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Borrow record created"
+          }
+        }
+      }
+    },
+    "/api/v1/borrows/{id}": {
+      "get": {
+        "summary": "Get borrow record by ID",
+        "tags": [
+          "Borrows"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Borrow record found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Borrow"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update borrow record",
+        "tags": [
+          "Borrows"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BorrowUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Borrow record updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete borrow record",
+        "tags": [
+          "Borrows"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Borrow deleted"
+          }
+        }
+      }
+    },
+    "/api/v1/members": {
+      "post": {
+        "summary": "Create a new member",
+        "tags": [
+          "Members"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Member"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Member created successfully"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all members",
+        "tags": [
+          "Members"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all members",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Member"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/members/{id}": {
+      "get": {
+        "summary": "Get member by ID",
+        "tags": [
+          "Members"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a member",
+        "tags": [
+          "Members"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Member updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a member",
+        "tags": [
+          "Members"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member deleted successfully"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

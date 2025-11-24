@@ -11,18 +11,15 @@ The major resources in the API are as follows:
 - Books: Manage all aspects of books including their information (title, author, genre, ISBN, and availability) such as adding, editing, deleting, and viewing.
 - Members: Let member management embrace variety in member data like name, email, and membership ID.
 - Borrows: Have all the records of borrowed books, due dates, and the return status.
-- Users: Manage registration, login, and role-based access (admin/staff).
 
 Proposed Endpoints
 
 /api/books → Book CRUD operations
 /api/members → CRUD operations for managing members
 /api/borrows → Overseeing the borrowing and returning of books
-/api/auth/register and /api/auth/login → Authentication of users
-/api/users/role → Assigning user roles through Firebase custom claims
 
 Data Storage
-The entire data will reside in Firebase Firestore which will have distinct collections for books, members, borrows, and users.
+The entire data will reside in Firebase Firestore which will have distinct collections for books, members, borrows.
 
 3. Course Content Alignment:
 
@@ -31,9 +28,7 @@ This project directly applies tools and concepts from the course, including:
 - Node.js, TypeScript, and Express — for building a RESTful back-end
 - Firebase Firestore — for database storage
 - Firebase Authentication — for secure login and roles
-- Joi — for data validation
-- Helmet.js and CORS — for security
-- Jest — for testing (targeting 65% coverage)
+- Jest — for testing
 - Swagger/OpenAPI — for API documentation
 -  GitHub — for version control and project management
 

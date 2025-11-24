@@ -1,36 +1,63 @@
-import { Request, Response } from 'express';
-import { db } from '../repositories/firestore.client';
-import { createBorrowSchema, updateBorrowSchema } from '../schemas/borrow.schema';
+import { Request, Response } from "express";
+import {
+  getBorrowsService,
+  getBorrowByIdService,
+  createBorrowService,
+  updateBorrowService,
+  deleteBorrowService
+} from "../services/borrowService";
+import { Borrow } from "../models/borrow.model";
 
-export const getBorrows = async (req: Request, res: Response) => {
-  res.json([{ id: '1', bookId: '1', memberId: '1', dueDate: '2025-12-31', returned: false }]);
+export const getBorrows = async (_req: Request, res: Response) => {
+  try {
+    const borrows = await getBorrowsService();
+    res.json({ success: true, data: borrows });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 };
 
 export const getBorrowById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  res.json({ id, bookId: '1', memberId: '1', dueDate: '2025-12-31', returned: false });
+  try {
+    const borrow = await getBorrowByIdService(req.params.id);
+
+    if (!borrow) {
+      return res.status(404).json({ success: false, message: "Borrow record not found" });
+    }
+
+    res.json({ success: true, data: borrow });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 };
 
 export const createBorrow = async (req: Request, res: Response) => {
-  const { error, value } = createBorrowSchema.validate(req.body);
-  if (error) return res.status(400).json({ error: error.details[0].message });
+  try {
+    const data: Borrow = req.body;
+    const id = await createBorrowService(data);
 
-  const borrow = value;
-  await db.collection('borrows').add(borrow);
-  res.status(201).json({ message: 'Borrow record created', borrow });
+    res.status(201).json({ success: true, message: "Borrow record created", id });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 };
 
 export const updateBorrow = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { error, value } = updateBorrowSchema.validate(req.body);
-  if (error) return res.status(400).json({ error: error.details[0].message });
+  try {
+    const data: Partial<Borrow> = req.body;
+    await updateBorrowService(req.params.id, data);
 
-  await db.collection('borrows').doc(id).update(value);
-  res.json({ message: 'Borrow record updated', borrow: value });
+    res.json({ success: true, message: "Borrow record updated" });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 };
 
 export const deleteBorrow = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  await db.collection('borrows').doc(id).delete();
-  res.json({ message: 'Borrow record deleted' });
+  try {
+    await deleteBorrowService(req.params.id);
+    res.json({ success: true, message: "Borrow record deleted" });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 };

@@ -1,27 +1,33 @@
-import * as bookRepository from "../repositories/bookRepository";
-import * as bookService from '../services/bookService';
+import {
+  createDocument,
+  getDocuments,
+  getDocumentById,
+  updateDocument,
+  deleteDocument
+} from "../repositories/firestoreRepository";
 
+import { Book } from "../models/book.model";
 
-export const createBook = async (data: any) => {
-    return await bookRepository.createBook(data);
+const COLLECTION = "books";
+
+export const createBookService = async (data: Book) => {
+  return await createDocument<Book>(COLLECTION, data);
 };
 
-export const getAllBooks = async () => {
-    return await bookRepository.getAllBooks();
+export const updateBookService = async (id: string, data: Partial<Book>) => {
+  return await updateDocument<Book>(COLLECTION, id, data);
 };
 
-export const getBookById = async (id: string) => {
-    return await bookRepository.getBookById(id);
+export const getBooksService = async () => {
+  const snapshot = await getDocuments(COLLECTION);
+  return snapshot.docs.map((doc: any): Book => ({ id: doc.id, ...doc.data() })) as Book[];
 };
 
-export const updateBook = async (id: string, data: any) => {
-    return await bookRepository.updateBook(id, data);
+export const getBookByIdService = async (id: string) => {
+  const doc = await getDocumentById(COLLECTION, id);
+  return doc?.exists ? ({ id: doc.id, ...doc.data() } as Book) : null;
 };
 
-export const deleteBook = async (id: string) => {
-    return await bookRepository.deleteBook(id);
-};
-
-export const updateBookCover = async (bookId: string, coverUrl: string) => {
-    return await bookRepository.updateBookCover(bookId, coverUrl);
+export const deleteBookService = async (id: string) => {
+  return await deleteDocument(COLLECTION, id);
 };

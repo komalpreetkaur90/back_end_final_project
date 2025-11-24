@@ -1,23 +1,47 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from './config/swagger';
+// Import statements
+import express, { Request, Response, Express } from "express";
+import dotenv from "dotenv";
+import swaggerUi from "swagger-ui-express";
+import { generateSwaggerSpec } from "../config/swaggerOptions";
 
-import booksRoutes from './api/v1/routes/bookRoutes';
-import membersRoutes from './api/v1/routes/members.routes';
-import borrowsRoutes from './api/v1/routes/borrows.routes';
+// Load environment variables
+dotenv.config();
 
-const app = express();
+// Other imports
+import morgan from "morgan";
 
-app.use(cors());
-app.use(helmet());
+// Routes
+import booksRoutes from "./api/v1/routes/bookRoutes";
+import membersRoutes from "./api/v1/routes/members.routes";
+import borrowsRoutes from "./api/v1/routes/borrows.routes";
+
+// Swagger import
+import setupSwagger from "../config/swagger";
+
+// Express app created
+const app: Express = express();
+
+// Setup Swagger AFTER creating app
+setupSwagger(app);
+
+// Parsing JSON requests
 app.use(express.json());
 
-app.use('/api/v1/books', booksRoutes);
-app.use('/api/v1/members', membersRoutes);
-app.use('/api/v1/borrows', borrowsRoutes);
+// HTTP request logging with Morgan
+app.use(morgan("combined"));
 
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+const swaggerSpec = generateSwaggerSpec();
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// Health check endpoint
+app.get("/health", (_req: Request, res: Response) => {
+  res.status(200).send("Server is healthy");
+});
+
+// API Routes
+app.use("/api/v1/books", booksRoutes);
+app.use("/api/v1/members", membersRoutes);
+app.use("/api/v1/borrows", borrowsRoutes);
+
+// Exporting app
 export default app;

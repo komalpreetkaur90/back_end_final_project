@@ -1,19 +1,8 @@
 import { Request, Response } from 'express';
 import * as borrowController from '../api/v1/controllers/borrows.controller';
-import { db } from '../api/v1/repositories/firestore.client';
+import * as borrowService from '../api/v1/services/borrowService';
 
-jest.mock('../api/v1/repositories/firestore.client', () => {
-  return {
-    db: {
-      collection: jest.fn(() => ({
-        add: jest.fn(() => Promise.resolve({ id: 'mock-id' })),
-        doc: jest.fn(() => ({
-          update: jest.fn(() => Promise.resolve()),
-        })),
-      })),
-    },
-  };
-});
+jest.mock('../api/v1/services/borrows.service');
 
 describe('Borrow Controller', () => {
   let req: Partial<Request>;
@@ -22,6 +11,7 @@ describe('Borrow Controller', () => {
 
   beforeEach(() => {
     jsonMock = jest.fn();
+
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),
@@ -29,23 +19,26 @@ describe('Borrow Controller', () => {
     };
   });
 
-   afterEach(() => {
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('createBorrow adds a borrow record', async () => {
-    req.body = { bookId: '1', memberId: '2', dueDate: '2025-12-31' };
+  it('createBorrow should add a borrow record', async () => {
+    req.body = {
+      bookId: '1',
+      memberId: '2',
+      dueDate: '2025-12-31'
+    };
+
+    // Mock service return
+    (borrowService.createBorrowService as jest.Mock).mockResolvedValue('mock-id');
 
     await borrowController.createBorrow(req as Request, res as Response);
 
     expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
       message: 'Borrow record created',
-      borrow: {
-        bookId: '1',
-        memberId: '2',
-        dueDate: new Date('2025-12-31'),
-        returned: false,
-      },
+      id: 'mock-id'
     });
   });
 });
